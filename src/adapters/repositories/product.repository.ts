@@ -14,4 +14,8 @@ export class ProductRepository {
     save(product: Product): Promise<Product> {
         return this.productModel.create(product);
     }
+
+    async findById(id: string): Promise<Product> {
+        return this.productModel.findById(id);
+    }
 }

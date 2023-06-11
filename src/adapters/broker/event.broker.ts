@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { ClientRMQ } from "@nestjs/microservices";
+import { IAmqpConnectionManager } from "amqp-connection-manager/dist/esm/AmqpConnectionManager";
 import { EventApplication } from "src/domain/events/event.application";
 import { IEventDispatcher } from "src/ports/outbound/event.dispatcher.interface";
 
@@ -7,10 +7,12 @@ import { IEventDispatcher } from "src/ports/outbound/event.dispatcher.interface"
 export class EventBroker implements IEventDispatcher {
 
     constructor(
-        @Inject('event-broker') private readonly cli: ClientRMQ) {}
+        @Inject('conn-amqp') private readonly cli: IAmqpConnectionManager) {}
 
     async publish(eventApplication: EventApplication): Promise<void> {
-        await this.cli.send(eventApplication.name, eventApplication)
+        const ch = this.cli.createChannel({ json: true });
+        await ch.publish('eduq-cursos', eventApplication.name, eventApplication.payload)
+        await ch.close()
         return;
     }
 

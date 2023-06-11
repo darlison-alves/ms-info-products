@@ -1,6 +1,6 @@
 import { PurchaseProductDTO } from "src/domain/dtos/purchase.product.dto";
-import { Product } from "src/domain/entities/product.entity";
+import { Order } from "src/domain/entities/order.entity";
 
 export interface IPurchaseProductUseCase {
-    handle(payload: PurchaseProductDTO): Promise<Product>
+    handle(payload: PurchaseProductDTO): Promise<Order>
 }

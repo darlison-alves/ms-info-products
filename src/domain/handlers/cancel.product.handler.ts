@@ -1,36 +1,31 @@
 import { Injectable } from "@nestjs/common";
 import { EventBroker } from "src/adapters/broker/event.broker";
-import { OrdertRepository } from "src/adapters/repositories/order.repository";
 import { ProductRepository } from "src/adapters/repositories/product.repository";
-import { IPurchaseProductUseCase } from "src/ports/inbound/purchase.product.use.case";
+import { ICancelProductUseCase } from "src/ports/inbound/cancel.product.use.case";
 import { PurchaseProductDTO } from "../dtos/purchase.product.dto";
-import { Order } from "../entities/order.entity";
-import { CoursePurchasedEvent } from "../events/course.purchased.event";
+import { Product } from "../entities/product.entity";
+import { CourseCancelledEvent } from "../events/course.cancelled.event";
 
 @Injectable()
-export class PurchaseProductHandler implements IPurchaseProductUseCase {
+export class CancelProductHandler implements ICancelProductUseCase {
     constructor(
-        private orderRepository: OrdertRepository,
         private productRepository: ProductRepository,
         private eventBroker: EventBroker
     ) { }
 
-    async handle(payload: PurchaseProductDTO): Promise<Order> {
+    async handle(payload: PurchaseProductDTO): Promise<Product> {
         try {
 
             const product = await this.productRepository.findById(payload.productId);
 
-            const order = Order.of(payload, "PAID")
-
-            await this.eventBroker.publish(new CoursePurchasedEvent({
+            await this.eventBroker.publish(new CourseCancelledEvent({
                 productId: payload.productId,
                 email: payload.buyerEmail,
                 serviceKey: payload.serviceKey,
                 productRole: product.code
             }));
 
-            await this.orderRepository.save(order);
-            return order;
+            return product;
         } catch (error) {
             console.log('Error', error)
         }
