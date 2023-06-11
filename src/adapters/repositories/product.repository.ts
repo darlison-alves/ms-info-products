@@ -6,7 +6,7 @@ import { Product } from "src/domain/entities/product.entity";
 @Injectable()
 export class ProductRepository {
     constructor(@InjectModel(Product.name) private productModel: Model<Product>) { }
-    
+
     async findAll(): Promise<Product[]> {
         return this.productModel.find()
     }
