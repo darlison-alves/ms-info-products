@@ -1,7 +1,7 @@
 import { Module, Provider } from "@nestjs/common";
-import { ClientsModule, Transport } from "@nestjs/microservices";
 import { MongooseModule } from "@nestjs/mongoose";
 import { ChannelWrapper, connect } from "amqp-connection-manager";
+import { CourseCancelledEvent } from "src/domain/events/course.cancelled.event";
 import { CoursePurchasedEvent } from "src/domain/events/course.purchased.event";
 
 const connAmqpProvider: Provider = {
@@ -17,6 +17,7 @@ const connAmqpProvider: Provider = {
                     await channel.assertQueue('info-product-sales');
 
                     await channel.bindQueue('info-product-sales', 'eduq-cursos', CoursePurchasedEvent.name);
+                    await channel.bindQueue('info-product-sales', 'eduq-cursos', CourseCancelledEvent.name);
                 },
             });
             return conn
@@ -28,16 +29,7 @@ const connAmqpProvider: Provider = {
 
 @Module({
     imports: [
-        MongooseModule.forRoot('mongodb://localhost/test', {}),
-        ClientsModule.register([
-            {
-                name: 'event-broker',
-                transport: Transport.RMQ,
-                options: {
-                    urls: ['amqp://localhost:5672']
-                },
-            },
-        ])
+        MongooseModule.forRoot('mongodb://localhost/test', {})
     ],
     providers: [
         connAmqpProvider

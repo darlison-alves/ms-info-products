@@ -18,12 +18,7 @@ export class CancelProductHandler implements ICancelProductUseCase {
 
             const product = await this.productRepository.findById(payload.productId);
 
-            await this.eventBroker.publish(new CourseCancelledEvent({
-                productId: payload.productId,
-                email: payload.buyerEmail,
-                serviceKey: payload.serviceKey,
-                productRole: product.code
-            }));
+            await this.eventBroker.publish(new CourseCancelledEvent(payload, product));
 
             return product;
         } catch (error) {

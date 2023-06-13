@@ -11,8 +11,8 @@ export class EventBroker implements IEventDispatcher {
 
     async publish(eventApplication: EventApplication): Promise<void> {
         const ch = this.cli.createChannel({ json: true });
-        await ch.publish('eduq-cursos', eventApplication.name, eventApplication.payload)
-        await ch.close()
+        await ch.publish('eduq-cursos', eventApplication.pattern, eventApplication)
+        await ch.close();
         return;
     }
 

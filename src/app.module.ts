@@ -7,6 +7,7 @@ import { ProductRepository } from './adapters/repositories/product.repository';
 import { ProductController } from './adapters/web/controllers/product.controller';
 import { Order } from './domain/entities/order.entity';
 import { Product } from './domain/entities/product.entity';
+import { CancelProductHandler } from './domain/handlers/cancel.product.handler';
 import { CreateProductHandler } from './domain/handlers/create.product.handler';
 import { ListProductHandler } from './domain/handlers/list.product.handler';
 import { PurchaseProductHandler } from './domain/handlers/purchase.product.handler';
@@ -20,9 +21,18 @@ import { PurchaseProductHandler } from './domain/handlers/purchase.product.handl
     {
       name: Order.name,
       schema: SchemaFactory.createForClass(Order)
-    }
-  ])],
+    },
+  ])
+  ],
   controllers: [ProductController],
-  providers: [PurchaseProductHandler, EventBroker, CreateProductHandler, ListProductHandler, ProductRepository, OrdertRepository],
+  providers: [
+    CancelProductHandler,
+    PurchaseProductHandler,
+    EventBroker,
+    CreateProductHandler,
+    ListProductHandler,
+    ProductRepository,
+    OrdertRepository
+  ],
 })
 export class AppModule { }

@@ -22,12 +22,7 @@ export class PurchaseProductHandler implements IPurchaseProductUseCase {
 
             const order = Order.of(payload, "PAID")
 
-            await this.eventBroker.publish(new CoursePurchasedEvent({
-                productId: payload.productId,
-                email: payload.buyerEmail,
-                serviceKey: payload.serviceKey,
-                productRole: product.code
-            }));
+            await this.eventBroker.publish(new CoursePurchasedEvent(payload, product));
 
             await this.orderRepository.save(order);
             return order;

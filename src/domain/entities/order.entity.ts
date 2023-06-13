@@ -1,5 +1,4 @@
 import { Prop, Schema } from "@nestjs/mongoose";
-import { randomUUID } from "crypto";
 import { PurchaseProductDTO } from "../dtos/purchase.product.dto";
 
 @Schema()
