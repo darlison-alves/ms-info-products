@@ -7,7 +7,6 @@ import { CoursePurchasedEvent } from "src/domain/events/course.purchased.event";
 const connAmqpProvider: Provider = {
     provide: 'conn-amqp',
     async useFactory() {
-        console.log('Provider conn-amqp')
         try {
             const conn = await connect(['amqp://rabbitmq:rabbitmq@localhost:5672'], { connectionOptions: { rejectUnauthorized: true } });
             await conn.createChannel({
@@ -24,7 +23,7 @@ const connAmqpProvider: Provider = {
         } catch (error) {
             console.log('err amqp', error)
         }
-    },
+    }
 }
 
 @Module({
