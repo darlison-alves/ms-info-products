@@ -1,0 +1,65 @@
+# THIS DOCKERFILE IS INTENDED FOR DEVELOPMENT ENVIRONMENTS
+# DO NOT USE THIS FOR PRODUCTION USAGES.
+
+version: '3'
+
+services:
+  db:
+    image: 'mongo'
+    ports:
+      - '27017:27017'
+    volumes:
+      - ./db:/data/db
+  rabbit:
+    image: 'rabbitmq:3-management'
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbitmq
+      - RABBITMQ_DEFAULT_PASS=rabbitmq
+  ms-info-products:
+    image: eduq/ms-info-products
+    build:
+      context: .
+    depends_on:
+      - db
+      - rabbit
+    environment:
+      - RABBIT_HOST=amqp://rabbitmq:rabbitmq@rabbit:5672
+      - RABBIT_QUEUE=info-product-sales
+      - MONGO_URL=mongodb://db:27017/test
+      - TZ='America/Fortaleza'
+      - PORT=3000
+    ports:
+      - "3000:3000"
+  ms-acess-user:
+    image: eduq/ms-acess-user
+    build:
+      context: ../ms-acess-user
+    depends_on:
+      - db
+      - rabbit
+    environment:
+      - MONGO_URL=mongodb://db:27017/test
+      - RABBIT_HOST=amqp://rabbitmq:rabbitmq@rabbit:5672
+      - RABBIT_QUEUE=info-product-sales
+      - TZ='America/Fortaleza'
+      - PORT=3001
+    ports:
+      - "3001:3001"
+  ms-cursos:
+    image: eduq/ms-cursos
+    build:
+      context: ../ms-cursos
+    depends_on:
+      - db
+      - rabbit
+    environment:
+      - MONGO_URL=mongodb://db:27017/test
+      - RABBIT_HOST=amqp://rabbitmq:rabbitmq@rabbit:5672
+      - RABBIT_QUEUE=ms-course
+      - TZ='America/Fortaleza'
+      - PORT=3002
+    ports:
+      - "3002:3002"
