@@ -51,7 +51,7 @@ services:
   ms-cursos:
     image: eduq/ms-cursos
     build:
-      context: ../ms-cursos
+      context: ../ms-course
     depends_on:
       - db
       - rabbit
